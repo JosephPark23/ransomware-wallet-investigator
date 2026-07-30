@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+
+# Commit .cache/ and fixtures/ before demo day — they ARE the offline demo.
+# Uncomment only if the repo gets unwieldy:
+# .cache/

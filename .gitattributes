@@ -1,0 +1,9 @@
+# Normalise line endings so Windows and macOS collaborators do not produce
+# whole-file diffs against each other.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.sh  text eol=lf
+*.png binary
+*.gz  binary
+*.zip binary
