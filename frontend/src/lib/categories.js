@@ -44,17 +44,39 @@ export const CATEGORY_LABELS = {
   counterparty: 'Counterparty',
 };
 
-/** Identity colour per category. Validated as a set -- see the note above. */
+/**
+ * Identity colour per category, as a CSS custom property with a literal
+ * fallback.
+ *
+ * ## Why a var() and not a hex
+ *
+ * The app now ships a light theme as well as a dark one, and the validated dark
+ * palette above is unreadable on a white card -- #c98500 against #ffffff is
+ * 2.6:1. Resolving the colour in CSS rather than in JS means the theme switch
+ * needs no React state, no context and no re-render: the same `fill` attribute
+ * paints correctly in both themes because the variable underneath it changed.
+ *
+ * The light values (declared in index.css) are the dark set moved down in
+ * lightness with hue held constant. Holding hue is what preserves the
+ * dichromatic separation the original validation measured -- CVD confusion lines
+ * run through hue, so a uniform lightness shift cannot bring two of these
+ * colours closer together, and the added lightness contrast can only help. The
+ * pair is still worth re-running through the validator if any hue moves.
+ *
+ * The literal fallback is the dark value, so anything rendering this SVG outside
+ * the app's stylesheet -- the poster export in tools/, a copied-out chart --
+ * still gets a real colour instead of black.
+ */
 export const CATEGORY_COLORS = {
-  sanctions: '#e66767',
-  ransomware: '#d95926',
-  obfuscation: '#d55181',
-  transaction_profile: '#3987e5',
-  counterparty: '#c98500',
+  sanctions: 'var(--cat-sanctions, #e66767)',
+  ransomware: 'var(--cat-ransomware, #d95926)',
+  obfuscation: 'var(--cat-obfuscation, #d55181)',
+  transaction_profile: 'var(--cat-transaction_profile, #3987e5)',
+  counterparty: 'var(--cat-counterparty, #c98500)',
 };
 
 /** Fallback for a category the backend invents later; grey reads as "unclassified". */
-export const UNKNOWN_CATEGORY_COLOR = '#64748b';
+export const UNKNOWN_CATEGORY_COLOR = 'var(--cat-unknown, #64748b)';
 
 export const categoryLabel = (category) => CATEGORY_LABELS[category] ?? category;
 export const categoryColor = (category) => CATEGORY_COLORS[category] ?? UNKNOWN_CATEGORY_COLOR;

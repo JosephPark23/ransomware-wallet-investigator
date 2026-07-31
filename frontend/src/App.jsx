@@ -1,88 +1,109 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Zap } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 import { SOURCE_FIXTURE, fetchAddressRisk, fetchDemoAddresses } from './lib/api.js';
 import { counterfactual } from './lib/counterfactual.js';
 import { degradedState, isCached } from './lib/degraded.js';
 import { DEMO_ADDRESSES, demoAddressesFrom } from './lib/demos.js';
 import { formatDate } from './lib/format.js';
-import { CATEGORIES, defaultWeights, scoreAddress } from './lib/scoring.js';
-import AddressInput from './components/AddressInput.jsx';
-import AnalysisSkeleton from './components/AnalysisSkeleton.jsx';
-import Counterfactual from './components/Counterfactual.jsx';
-import DegradedBanner from './components/DegradedBanner.jsx';
-import DemoPicker from './components/DemoPicker.jsx';
-import NetworkGraph from './components/NetworkGraph.jsx';
-import NoSignals from './components/NoSignals.jsx';
-import ProfileStats from './components/ProfileStats.jsx';
-import ScoreDial from './components/ScoreDial.jsx';
-import SignalList from './components/SignalList.jsx';
-import SourcePanel from './components/SourcePanel.jsx';
-import TaintPath from './components/TaintPath.jsx';
-import Waterfall from './components/Waterfall.jsx';
-import WeightSliders from './components/WeightSliders.jsx';
+import { activePresetId } from './lib/presets.js';
+import { defaultWeights, scoreAddress } from './lib/scoring.js';
+import { formatScore } from './lib/waterfall.js';
 
-/** The address the app analyses on first paint. */
-const INITIAL_ADDRESS = DEMO_ADDRESSES[0].address;
+import Assessment, { summarise } from './components/Assessment.jsx';
+import { SectionNav, TopBar } from './components/Chrome.jsx';
+import Composition from './components/Composition.jsx';
+import Evidence from './components/Evidence.jsx';
+import Launch from './components/Launch.jsx';
+import Method from './components/Method.jsx';
+import Network from './components/Network.jsx';
+import Profile from './components/Profile.jsx';
+import Progress from './components/Progress.jsx';
+import { CopyButton, Note } from './components/ui.jsx';
+
+/**
+ * ## Two modes, not one screen
+ *
+ * The previous build had a single mode: it analysed a hard-coded demo address
+ * before the user had done anything and arrived at a full dashboard. That put
+ * the address entry -- the only thing a first-time visitor can act on -- into a
+ * strip above a page already dense with somebody else's results, and spent a
+ * ten-to-twenty second analysis nobody had asked for.
+ *
+ * Now the app opens on the question it exists to answer (which address?) and
+ * transitions to the workspace once there is something to show. The input does
+ * not disappear at that point, it relocates: a compact field in the persistent
+ * top bar, reachable from anywhere in the document and no longer competing for
+ * the reader's first glance.
+ *
+ * ## What is preserved from the previous implementation
+ *
+ * All of it, deliberately. The request-superseding logic, the fixture fallback
+ * and its honesty notice, the strict reading of `degraded` and `cached`, and the
+ * entire pure lib/ layer with its tests. Every change in this file is about WHEN
+ * things are shown and WHERE, not about what is true.
+ */
+
+const params = () => new URLSearchParams(window.location.search);
 
 export default function App() {
-  // Starts as the built-in list so the picker is never empty on first paint,
-  // then upgrades to the backend's curated set if /api/demo answers. The
-  // initial analysis does not wait on it -- a slow demo endpoint should not
-  // delay the thing the reader came to see.
   const [demos, setDemos] = useState(DEMO_ADDRESSES);
   const [payload, setPayload] = useState(null);
   const [meta, setMeta] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
   const [weights, setWeights] = useState(defaultWeights);
 
-  // What is in the text box, versus what was actually analysed. They differ
-  // while the user is typing, and they can differ AFTER a lookup too -- see the
-  // fixture note below.
-  const [query, setQuery] = useState(INITIAL_ADDRESS);
-  const [analyzed, setAnalyzed] = useState(INITIAL_ADDRESS);
+  // 'launch' before anything has been asked for, 'running' while a lookup is in
+  // flight, 'results' once one has landed. A re-run returns to 'running' rather
+  // than leaving the previous address's score on screen under a spinner -- a
+  // wrong number displayed confidently is the one failure this app cannot
+  // afford.
+  const [mode, setMode] = useState('launch');
+  const [analyzed, setAnalyzed] = useState('');
 
-  // Against the fixture every lookup resolves instantly, but a real analysis
-  // takes 10-20 seconds (contract.md), so two quick submits would otherwise be
-  // in flight together with no guarantee the LAST one is the one that lands.
-  // The newest request wins: the previous is aborted, and a superseded response
-  // is ignored even if it still arrives.
   const inFlight = useRef(null);
+  const resultsRef = useRef(null);
 
-  const analyze = useCallback((address, { initial = false } = {}) => {
+  // -------------------------------------------------------------------------
+
+  const analyze = useCallback((address) => {
     inFlight.current?.abort();
     const controller = new AbortController();
     inFlight.current = controller;
 
-    if (initial) setLoading(true);
-    else setBusy(true);
     setAnalyzed(address);
+    setMode('running');
+
+    // The analysis is linkable and survives a refresh. Investigators work in
+    // case notes and share findings; an analysis that exists only in one browser
+    // tab cannot be cited.
+    const next = params();
+    next.set('address', address);
+    window.history.replaceState({}, '', `?${next.toString()}`);
+    document.title = `${address.slice(0, 10)}\u2026 \u2014 Chainmark`;
 
     fetchAddressRisk(address, { signal: controller.signal })
-      // TODO: against fixtures this resolves in ~0ms, so the skeleton flashes and is gone; the real 10-20s backend call is what makes it worth having. Verified with a temporary 800ms delay here.
       .then(({ data, source, reason }) => {
         if (controller !== inFlight.current) return; // superseded
         setPayload(data);
         setMeta({ source, reason });
+        setMode('results');
       })
       .catch((err) => {
-        // api.js resolves on transport failure, so the only thing that lands
-        // here is an abort -- which is not an error worth showing.
+        // api.js resolves on transport failure, so the only thing landing here
+        // is an abort, which is not an error worth showing.
         if (err?.name !== 'AbortError') throw err;
       })
       .finally(() => {
-        // Don't let a superseded request clear the flag for the live one.
         if (controller !== inFlight.current) return;
         inFlight.current = null;
-        setLoading(false);
-        setBusy(false);
       });
-
-    return () => controller.abort();
   }, []);
 
-  useEffect(() => analyze(INITIAL_ADDRESS, { initial: true }), [analyze]);
+  // Deep link on first paint; otherwise the launch screen, and no network call.
+  useEffect(() => {
+    const address = params().get('address');
+    if (address) analyze(address);
+  }, [analyze]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -92,17 +113,18 @@ export default function App() {
     return () => controller.abort();
   }, []);
 
-  // One flag for "an analysis is in flight", whether it is the first one or a
-  // later one. Both put the same skeleton on screen -- the reader does not care
-  // which it is, and a first load that looks different from a re-run just makes
-  // the page feel inconsistent.
-  const pending = loading || busy;
+  // Results arriving is a page-level change a sighted user sees instantly and a
+  // screen reader user would otherwise have to go looking for. Moving focus to
+  // the heading of the new content also puts a keyboard user at the top of what
+  // they asked for rather than back in the top bar.
+  useEffect(() => {
+    if (mode === 'results') resultsRef.current?.focus();
+  }, [mode, analyzed]);
+
+  // -------------------------------------------------------------------------
 
   const signals = payload?.signals ?? [];
   const result = useMemo(() => scoreAddress(signals, weights), [signals, weights]);
-  const activeCount = result.categories.filter((c) => c.active).length;
-
-  // Recomputed on every weight change, same as the dial.
   const counterfactualResult = useMemo(
     () => counterfactual(signals, weights, result),
     [signals, weights, result],
@@ -110,129 +132,160 @@ export default function App() {
 
   const setWeight = (category, value) => setWeights((w) => ({ ...w, [category]: value }));
   const applyPreset = (preset) => setWeights({ ...preset.weights });
+  const adjusted = activePresetId(weights) !== 'balanced';
 
-  const handleDemo = (demo) => {
-    setQuery(demo.address);
-    analyze(demo.address);
-  };
+  const settled = mode === 'results';
+  const { degraded, warnings } = degradedState(settled ? payload : null);
+  const cached = settled && isCached(payload);
+  const analyzedAt = settled ? formatDate(payload?.analyzed_at) : null;
 
-  // There is no backend yet, so every lookup resolves to the same fixture
-  // whatever was typed. Saying so is better than letting the header quietly
-  // show a different address than the one the user just submitted.
-  //
-  // Suppressed while pending: `payload` is still the PREVIOUS result then, so
-  // comparing it against the newly submitted address compares two unrelated
-  // things and flashes the notice on every re-run.
-  const servedFixtureForOtherAddress =
-    !pending &&
-    meta?.source === SOURCE_FIXTURE &&
-    payload?.address &&
-    analyzed !== payload.address;
+  // Every lookup resolves to the same fixture when no backend is reachable.
+  // Saying so is better than letting the page quietly report on a different
+  // address than the one that was submitted.
+  const fixtureMismatch =
+    settled && meta?.source === SOURCE_FIXTURE && payload?.address && analyzed !== payload.address;
 
-  // Envelope state. Read only when settled, for the same reason -- a stale
-  // "cached" badge or degraded banner describes the last response, not this one.
-  const { degraded, warnings } = degradedState(pending ? null : payload);
-  const cached = !pending && isCached(payload);
-  const analyzedAt = !pending ? formatDate(payload?.analyzed_at) : null;
+  const summaryText = useMemo(
+    () =>
+      settled
+        ? summarise({
+            address: payload?.address ?? analyzed,
+            result,
+            signals,
+            analyzedAt,
+            adjusted,
+            sources: payload?.sources_used ?? [],
+          })
+        : '',
+    [settled, payload, analyzed, result, signals, analyzedAt, adjusted],
+  );
+
+  const sections = useMemo(
+    () => [
+      { id: 'assessment', label: 'Assessment' },
+      { id: 'evidence', label: 'Evidence', count: signals.length },
+      { id: 'composition', label: 'Composition' },
+      { id: 'network', label: 'Network', count: payload?.graph?.nodes?.length ?? 0 },
+      ...(payload?.profile ? [{ id: 'profile', label: 'Wallet profile' }] : []),
+      { id: 'method', label: 'Method' },
+    ],
+    [signals.length, payload],
+  );
+
+  // -------------------------------------------------------------------------
+
+  if (mode === 'launch') {
+    return <Launch onAnalyze={analyze} demos={demos} />;
+  }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <header className="mb-6">
-        <h1 className="text-xl font-semibold text-slate-100">Bitcoin Address Risk</h1>
-        {/* Falls back to the submitted address so the first paint is not blank
-            and so the header names what is being analysed, not what was. */}
-        <p className="mt-1 font-mono text-sm break-all text-slate-400">
-          {payload?.address ?? analyzed}
-        </p>
+    <>
+      <a
+        href="#main"
+        className="sr-only z-50 rounded-sm bg-accent px-4 py-2 text-on-accent focus:not-sr-only focus:absolute focus:top-2 focus:left-2"
+      >
+        Skip to analysis
+      </a>
 
-        {analyzedAt && (
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
-            <span>
-              Analysed <time dateTime={payload.analyzed_at}>{analyzedAt}</time>
-            </span>
-            {cached && (
-              <span
-                className="inline-flex items-center gap-1 rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-300 ring-1 ring-sky-500/30"
-                title="Served from the backend's cache — returned in milliseconds instead of 10-20 seconds."
-              >
-                <Zap className="h-3 w-3" aria-hidden="true" />
-                Cached
-              </span>
-            )}
-          </p>
-        )}
+      <TopBar
+        address={payload?.address ?? analyzed}
+        band={settled ? result.band : undefined}
+        score={settled ? formatScore(result.finalScore) : undefined}
+        busy={mode === 'running'}
+        demos={demos}
+        onAnalyze={analyze}
+        summaryText={summaryText}
+      />
 
-        {meta?.source === SOURCE_FIXTURE && (
-          <p className="mt-1 text-xs text-slate-500">{meta.reason}</p>
-        )}
-      </header>
+      {/* One polite live region for the whole app, so the outcome of an analysis
+          is announced once rather than reconstructed from a dozen individually
+          updating parts. */}
+      <div aria-live="polite" className="sr-only">
+        {mode === 'running'
+          ? `Analysing ${analyzed}.`
+          : settled
+            ? `Analysis complete. Score ${formatScore(result.finalScore)} out of 100, ${
+                result.band
+              } risk, from ${signals.length} ${signals.length === 1 ? 'finding' : 'findings'}.`
+            : ''}
+      </div>
 
-      <section className="mb-6 rounded-2xl bg-slate-900/60 p-5 ring-1 ring-slate-800">
-        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,16rem)] sm:items-start">
-          <AddressInput value={query} onChange={setQuery} onAnalyze={analyze} busy={pending} />
-          <DemoPicker onSelect={handleDemo} busy={pending} demos={demos} />
-        </div>
-
-        {servedFixtureForOtherAddress && (
-          <p className="mt-3 border-t border-slate-800 pt-3 text-xs text-amber-300/80">
-            No backend is wired up yet, so every address returns the same sample. You asked for{' '}
-            <span className="font-mono break-all">{analyzed}</span>; the results below are for{' '}
-            <span className="font-mono break-all">{payload.address}</span>.
-          </p>
-        )}
-      </section>
-
-      {pending ? (
-        <AnalysisSkeleton />
+      {mode === 'running' ? (
+        <main id="main">
+          <Progress address={analyzed} />
+        </main>
       ) : (
-        <>
-          <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:items-start">
-            <div className="space-y-4 lg:sticky lg:top-8">
-              {/* Above the dial: the reader has to know the picture is partial
-                  before they read the number, not after. */}
-              {degraded && <DegradedBanner warnings={warnings} />}
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,200px)] lg:gap-10">
+            <main id="main" className="min-w-0 py-6 lg:py-8">
+              <h1 ref={resultsRef} tabIndex={-1} className="sr-only">
+                Risk analysis for {payload?.address ?? analyzed}
+              </h1>
 
-              <ScoreDial
-                score={result.finalScore}
-                band={result.band}
-                activeCategories={activeCount}
-                totalCategories={CATEGORIES.length}
-              />
-              <Counterfactual result={counterfactualResult} />
-              <WeightSliders
-                weights={weights}
-                onChange={setWeight}
-                onApplyPreset={applyPreset}
-                categories={result.categories}
-              />
-            </div>
-
-            {/* Both panels own an empty state so each is correct on its own, but
-                stacking two identical "no risk indicators" cards would be silly --
-                with nothing to show, the column renders it once. */}
-            <div className="space-y-6">
-              {signals.length === 0 ? (
-                <NoSignals />
-              ) : (
-                <>
-                  <Waterfall contributions={result.contributions} finalScore={result.finalScore} />
-                  <SignalList signals={signals} categories={result.categories} />
-                </>
+              {fixtureMismatch && (
+                <Note tone="warn" icon={AlertTriangle} className="mb-6">
+                  No backend is reachable, so every lookup returns the same sample. You asked for{' '}
+                  <span className="font-mono break-all">{analyzed}</span>; everything below describes{' '}
+                  <span className="font-mono break-all">{payload.address}</span>.
+                </Note>
               )}
+              {!fixtureMismatch && meta?.source === SOURCE_FIXTURE && (
+                <Note className="mb-6">{meta.reason}</Note>
+              )}
+
+              <div className="space-y-12 lg:space-y-16">
+                <Assessment
+                  result={result}
+                  signals={signals}
+                  weights={weights}
+                  onApplyPreset={applyPreset}
+                  degraded={degraded}
+                  warnings={warnings}
+                  counterfactualResult={counterfactualResult}
+                  analyzedAt={analyzedAt}
+                  cached={cached}
+                  adjusted={adjusted}
+                />
+
+                <Evidence signals={signals} result={result} weights={weights} />
+
+                <Composition
+                  contributions={result.contributions}
+                  finalScore={result.finalScore}
+                  hasSignals={signals.length > 0}
+                />
+
+                <Network graph={payload?.graph} taintPaths={payload?.taint_paths ?? []} />
+
+                <Profile profile={payload?.profile} />
+
+                <Method
+                  weights={weights}
+                  categories={result.categories}
+                  onChange={setWeight}
+                  onApplyPreset={applyPreset}
+                  sources={payload?.sources_used}
+                />
+              </div>
+
+              <footer className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-line py-8 text-[0.8125rem] text-ink-faint">
+                <p className="max-w-xl leading-relaxed">
+                  This analysis reports what public datasets and on-chain behaviour show. It does not
+                  establish who controls an address, and a low score is not a clearance.
+                </p>
+                <CopyButton value={summaryText} label="Copy summary" variant="secondary" size="md" />
+              </footer>
+            </main>
+
+            {/* Order matters: the navigation follows the content in the DOM, so a
+                screen reader and a keyboard user reach the analysis first, and
+                CSS places the rail alongside it. */}
+            <div className="order-first lg:order-none lg:py-8">
+              <SectionNav sections={sections} />
             </div>
           </div>
-
-          {/* Below the evidence cards: where the money went, then what the
-              address did, then who says so. All full width -- they describe the
-              whole result rather than the dial, and the graph needs the room. */}
-          <div className="mt-6 space-y-6">
-            <NetworkGraph graph={payload?.graph} />
-            <TaintPath paths={payload?.taint_paths} />
-            <ProfileStats profile={payload?.profile} />
-            <SourcePanel sources={payload?.sources_used} />
-          </div>
-        </>
+        </div>
       )}
-    </main>
+    </>
   );
 }

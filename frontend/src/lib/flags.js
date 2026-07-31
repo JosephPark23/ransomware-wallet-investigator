@@ -32,7 +32,7 @@ export const FLAG_OFAC = 'ofac';
 export const FLAG_RANSOMWARE = 'ransomware';
 
 /** Unflagged nodes. Grey reads as "nothing known against this address". */
-export const UNFLAGGED_COLOR = '#64748b'; // slate-500
+export const UNFLAGGED_COLOR = 'var(--node-unflagged, #64748b)';
 
 /**
  * Most severe first. An address that is both sanctioned and a known ransomware
