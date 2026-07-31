@@ -1,0 +1,54 @@
+{
+  "stats": {
+    "chain_stats": {
+      "funded_txo_sum": 300000000,
+      "spent_txo_sum": 300000000,
+      "tx_count": 2,
+      "funded_txo_count": 2,
+      "spent_txo_count": 2
+    },
+    "mempool_stats": {
+      "funded_txo_sum": 0,
+      "spent_txo_sum": 0,
+      "tx_count": 0
+    }
+  },
+  "txs": [
+    {
+      "txid": "nb001",
+      "timestamp": "2024-03-01T12:00:00+00:00",
+      "block_time": 1709294400,
+      "inputs": [
+        {
+          "address": "123WBUDmSJv4GctdVEz6Qq6z8nXSKrJ4KX",
+          "value": 3.01
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1NeighbourTestAddressAAAAAAAAAAAAAA",
+          "value": 3.0
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "nb002",
+      "timestamp": "2024-03-03T12:00:00+00:00",
+      "block_time": 1709467200,
+      "inputs": [
+        {
+          "address": "1NeighbourTestAddressAAAAAAAAAAAAAA",
+          "value": 3.0
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1Uz1X6Qg2ZBB7uv2Cbjd5Der6wifC3wnPU",
+          "value": 2.99
+        }
+      ],
+      "fee": 0.0001
+    }
+  ]
+}

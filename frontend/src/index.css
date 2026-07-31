@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-band-low: oklch(0.72 0.15 155);
+  --color-band-moderate: oklch(0.78 0.15 85);
+  --color-band-elevated: oklch(0.72 0.17 55);
+  --color-band-high: oklch(0.63 0.22 25);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+}

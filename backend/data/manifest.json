@@ -1,0 +1,25 @@
+{
+  "sources": {
+    "ransomware_live_groups.json": {
+      "provenance_note": "Snapshot predates manifest support; retrieval time is unknown.",
+      "records": 372,
+      "retrieved_at": null,
+      "sha256": "f40502391f171ac690c3b1e041555242cda9a6939c20e42fd2ac7d207e485be1",
+      "url": "https://api.ransomware.live/v2/groups"
+    },
+    "ransomwhere.json": {
+      "provenance_note": "Snapshot predates manifest support; retrieval time is unknown.",
+      "records": 11186,
+      "retrieved_at": null,
+      "sha256": "faae0ef8d0060df21ced57a821778f56849121d6a853f5710d277052c62df6b7",
+      "url": "https://api.ransomwhe.re/export"
+    },
+    "sanctioned_addresses_XBT.txt": {
+      "provenance_note": "Snapshot predates manifest support; retrieval time is unknown.",
+      "records": 522,
+      "retrieved_at": null,
+      "sha256": "4594d4b2448f7e3059ffa2dc6e1ef896935e17c4fef071bcfb63355d482c5029",
+      "url": "https://raw.githubusercontent.com/0xB10C/ofac-sanctioned-digital-currency-addresses/lists/sanctioned_addresses_XBT.txt"
+    }
+  }
+}

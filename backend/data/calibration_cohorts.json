@@ -1,0 +1,108 @@
+{
+  "ofac": [
+    {
+      "address": "bc1qau9pmgc8l6rxpdwwap3fd6zprh5yp9mpe9jl0h",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "15PggTG7YhJKiE6B16vkKzA1YDTZipXEX4",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "3KGQ3hX6eFYtBjTBFSdvdkzHmwZyYWLRQh",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "bc1qyqvyupkpl6tm60zdecef925y220ssjuagpxsm0",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "1DKGRGJXGNLAtTeFb9SNPNHtrkZ87q7qKi",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "1Kuf2Rd8mDyAViwBozGTNYnvWL8uYFrkVo",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "14kqryJUxM3a7aEi117KX9hoLUw592WsMR",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "3PDmRwotTkRAFRLGTUrucCERp2JdM1q4ar",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "37KHumAdzFcg1fXMv36UGg91MHPqhJUv19",
+      "note": "OFAC sanctioned"
+    },
+    {
+      "address": "3HQRveQzPifZorZLDXHernc5zjoZax8U9f",
+      "note": "OFAC sanctioned"
+    }
+  ],
+  "ransomware": [
+    {
+      "address": "bc1qtf5yrquyhuf85pcz2746xw4y44zykk0ufwpn66",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "18e372GNwjGG5SYeHucuD1yLEWh7a6dWf1",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "1HUqiacJ6F6yLwTeGwohEdgWVuehibEegq",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "bc1qj4hglg9vceql2qj3kad67vh8sgq83535mwvhhk",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "17PPcJsY6aSmmjFnshiBEEp6kgct8G7wuU",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "1EhHaeQ5x8Q4wF62QwqRUfoFrbYo2PLR7c",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "1NuLLtgCmigRb5mXeFgsGDFnVLypLC4a8Y",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "14M8KGBLPaFvn1ZksnUqbFdPqtDqvbKZxm",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "1G33X8xyVHELfNRMz79VNeEUJmSgFygCQ3",
+      "note": "Ransomwhere listed"
+    },
+    {
+      "address": "1JjKYDsYrJGPCzLGGmFL8nM7AvUncd2wYW",
+      "note": "Ransomwhere listed"
+    }
+  ],
+  "benign": [
+    {
+      "address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+      "note": "Genesis block coinbase"
+    },
+    {
+      "address": "1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY",
+      "note": "Internet Archive donations"
+    },
+    {
+      "address": "1Archive1n2C579dMsAu3iC6tWzuQJz8dN",
+      "note": "Internet Archive (vanity)"
+    },
+    {
+      "address": "3D2oetdNuZUqQHPJmcMDDHYoqkyNVsFk9r",
+      "note": "Bitfinex hot wallet"
+    },
+    {
+      "address": "bc1qgdjqv0av3q56jvd82tkdjpy7gdp9ut8tlqmgrpmv24sq90ecnvqqjwvw97",
+      "note": "Binance cold wallet"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+.env
+*.key
+*.pem
+node_modules/
+dist/
+
+# Response cache is regenerated at runtime; fixtures/ IS committed, it is the
+# offline demo.
+backend/.cache/

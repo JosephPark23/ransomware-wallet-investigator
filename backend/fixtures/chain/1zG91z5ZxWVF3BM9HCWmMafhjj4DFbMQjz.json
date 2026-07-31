@@ -1,0 +1,34 @@
+{
+  "stats": {
+    "chain_stats": {
+      "funded_txo_sum": 201000000,
+      "spent_txo_sum": 200000000,
+      "tx_count": 2
+    },
+    "mempool_stats": {
+      "funded_txo_sum": 0,
+      "spent_txo_sum": 0,
+      "tx_count": 0
+    }
+  },
+  "txs": [
+    {
+      "txid": "offline-hop-two-001",
+      "timestamp": "2024-02-29T12:00:00+00:00",
+      "block_time": 1709208000,
+      "inputs": [
+        {
+          "address": "1BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+          "value": 2.01
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1zG91z5ZxWVF3BM9HCWmMafhjj4DFbMQjz",
+          "value": 2.0
+        }
+      ],
+      "fee": 0.01
+    }
+  ]
+}

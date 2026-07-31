@@ -1,0 +1,38 @@
+[
+  {
+    "address": "123WBUDmSJv4GctdVEz6Qq6z8nXSKrJ4KX",
+    "label": "OFAC-designated",
+    "category": "sanctions",
+    "expectation": "Direct sanctions hit at severity 100. The score saturates at 100 under any weighting that leaves sanctions switched on \u2014 a confirmed designation is a maximum-risk finding."
+  },
+  {
+    "address": "1NeighbourTestAddressAAAAAAAAAAAAAA",
+    "label": "One hop from a sanctioned address",
+    "category": "counterparty",
+    "expectation": "On no list itself, and would score clean on lists alone. Received 3 BTC directly from the OFAC address above, so counterparty analysis is the only thing that finds it. This is the enrichment case."
+  },
+  {
+    "address": "1Pem6rKEegySJBkgXMCEqt4Z7i67smd5GP",
+    "label": "Collection wallet",
+    "category": "behavioral",
+    "expectation": "On no list. Fires the funnel, burst-then-dormant and round-value behavioural rules: many senders, two recipients, drained balance."
+  },
+  {
+    "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+    "label": "Pass-through relay",
+    "category": "obfuscation",
+    "expectation": "Rapid-forward: most of what arrives leaves within the hour. Also normal for a custodial hot wallet, hence medium confidence."
+  },
+  {
+    "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+    "label": "Self-peeling wallet",
+    "category": "obfuscation",
+    "expectation": "Repeated dominant-output self-change spends. Low confidence on purpose: this is not a classic multi-address peel chain and the rule does not claim to be one."
+  },
+  {
+    "address": "1zG91z5ZxWVF3BM9HCWmMafhjj4DFbMQjz",
+    "label": "Clean control",
+    "category": "benign",
+    "expectation": "No signals at all. The control that proves the tool can stay quiet \u2014 a blank result is a result, and a demo set without one proves nothing about false positives."
+  }
+]

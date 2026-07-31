@@ -1,0 +1,486 @@
+{
+  "address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+  "chain": "bitcoin",
+  "analyzed_at": "2026-07-27T09:00:00+00:00",
+  "cached": false,
+  "degraded": false,
+  "profile": {
+    "tx_count": 17,
+    "total_received": 7.99999999,
+    "total_sent": 7.99999999,
+    "balance": 0.0,
+    "window_txs": 17,
+    "window_complete": true,
+    "window_first_seen": "2024-03-01T12:00:00+00:00",
+    "window_last_seen": "2024-10-08T12:00:00+00:00",
+    "window_received": 8.0,
+    "window_sent": 8.0,
+    "window_unique_senders": 15,
+    "window_unique_recipients": 2,
+    "window_active_days": 17
+  },
+  "signals": [
+    {
+      "id": "sanctions.direct_hit",
+      "category": "sanctions",
+      "label": "Address is on the OFAC SDN list",
+      "severity": 100,
+      "confidence": "high",
+      "explanation": "This exact address appears on OFAC's list of sanctioned digital currency addresses. Transacting with it may carry legal consequences for U.S. persons and entities.",
+      "evidence": {
+        "matched_address": "123WBUDmSJv4GctdVEz6Qq6z8nXSKrJ4KX",
+        "entity": null,
+        "program": null,
+        "listed_on": null,
+        "asset": "XBT",
+        "list_size": 521
+      },
+      "source": {
+        "name": "OFAC SDN List",
+        "url": "https://ofac.treasury.gov/specially-designated-nationals-and-blocked-persons-list-sdn-human-readable-lists",
+        "retrieved_at": null
+      }
+    },
+    {
+      "id": "ransomware.known_address",
+      "category": "ransomware",
+      "label": "Known ransomware payment address (Conti)",
+      "severity": 95,
+      "confidence": "high",
+      "explanation": "This address appears in the Ransomwhere crowdsourced dataset of confirmed ransomware payment addresses, attributed to the Conti family. Reports in that dataset require a screenshot of the ransom demand and are reviewed before publication.",
+      "evidence": {
+        "matched_address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "family": "Conti",
+        "reported_transactions": 14,
+        "first_reported_payment": "2021-06-02T09:14:00+00:00",
+        "last_reported_payment": "2021-11-18T22:03:00+00:00",
+        "dataset_size": 26000
+      },
+      "source": {
+        "name": "Ransomwhere",
+        "url": "https://api.ransomwhe.re/export",
+        "retrieved_at": "2026-07-27T09:00:00+00:00"
+      }
+    },
+    {
+      "id": "counterparty.flagged_neighbor",
+      "category": "counterparty",
+      "label": "Transacted directly with 2 flagged addresses",
+      "severity": 70,
+      "confidence": "high",
+      "explanation": "This address exchanged funds directly with 1CoUnT\u20269xQ2, which is OFAC-sanctioned, and with 1 other flagged address. A total of 4.2 BTC moved between this address and that counterparty in the transactions we retrieved.",
+      "evidence": {
+        "flagged_counterparties": [
+          {
+            "address": "1CoUnTerPartyExampleAddress009xQ2",
+            "flags": [
+              "ofac"
+            ],
+            "description": "OFAC-sanctioned",
+            "value_exchanged": 4.2
+          },
+          {
+            "address": "1SecondFlaggedCounterparty00003Kd",
+            "flags": [
+              "ransomware:REvil"
+            ],
+            "description": "attributed to the REvil ransomware family",
+            "value_exchanged": 0.85
+          }
+        ],
+        "total_flagged_neighbors": 2
+      },
+      "source": {
+        "name": "Counterparty analysis (OFAC + Ransomwhere over Esplora)",
+        "url": null,
+        "retrieved_at": "2026-07-27T09:00:00+00:00"
+      }
+    },
+    {
+      "id": "profile.collection_pattern",
+      "category": "transaction_profile",
+      "label": "Funnel pattern: many senders, few recipients, drained balance",
+      "severity": 45,
+      "confidence": "medium",
+      "explanation": "In the analyzed transaction window, this address received funds from 15 distinct senders but paid out to only 2, and the window has a near-zero net balance (0 BTC). That many-in, few-out, drained shape is characteristic of a collection or consolidation wallet rather than personal use. It is also normal for some exchange deposit and donation addresses, so treat it as supporting evidence, not proof.",
+      "evidence": {
+        "window_unique_senders": 15,
+        "window_unique_recipients": 2,
+        "window_balance": 0.0,
+        "window_received": 8.0,
+        "threshold": "\u226510 senders, \u22643 recipients, balance under 2% of receipts"
+      },
+      "source": {
+        "name": "Behavioral heuristic (this tool)",
+        "url": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "id": "profile.burst_then_dormant",
+      "category": "transaction_profile",
+      "label": "Concentrated burst of receipts, then dormancy",
+      "severity": 40,
+      "confidence": "medium",
+      "explanation": "100% of value in the complete analyzed history arrived in a single 30-day window (15 payments starting 2024-03-01), and the address has been inactive for 866 days as of this analysis. Short intense collection followed by abandonment is a common shape for campaign-specific payment addresses.",
+      "evidence": {
+        "window_share": 1.0,
+        "window_start": "2024-03-01T12:00:00+00:00",
+        "window_end": "2024-03-16T02:00:00+00:00",
+        "payments_in_window": 15,
+        "dormant_days": 866,
+        "threshold": "\u226580% of value in \u226430 days, then \u226590 days inactive"
+      },
+      "source": {
+        "name": "Behavioral heuristic (this tool)",
+        "url": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "id": "profile.round_value_payments",
+      "category": "transaction_profile",
+      "label": "15 incoming payments at round BTC amounts",
+      "severity": 35,
+      "confidence": "low",
+      "explanation": "15 separate incoming transactions landed within 1% of a round figure (0.1 BTC, 0.5 BTC, 1 BTC). Organic payments rarely cluster on round numbers; demanded amounts often do. This is a weak indicator on its own and is flagged as low confidence.",
+      "evidence": {
+        "matches": [
+          {
+            "txid": "in000",
+            "amount": 0.5,
+            "matched_value": 0.5,
+            "timestamp": "2024-03-01T12:00:00+00:00"
+          },
+          {
+            "txid": "in001",
+            "amount": 1.0,
+            "matched_value": 1.0,
+            "timestamp": "2024-03-02T13:00:00+00:00"
+          },
+          {
+            "txid": "in002",
+            "amount": 0.1,
+            "matched_value": 0.1,
+            "timestamp": "2024-03-03T14:00:00+00:00"
+          },
+          {
+            "txid": "in003",
+            "amount": 0.5,
+            "matched_value": 0.5,
+            "timestamp": "2024-03-04T15:00:00+00:00"
+          },
+          {
+            "txid": "in004",
+            "amount": 1.0,
+            "matched_value": 1.0,
+            "timestamp": "2024-03-05T16:00:00+00:00"
+          },
+          {
+            "txid": "in005",
+            "amount": 0.1,
+            "matched_value": 0.1,
+            "timestamp": "2024-03-06T17:00:00+00:00"
+          },
+          {
+            "txid": "in006",
+            "amount": 0.5,
+            "matched_value": 0.5,
+            "timestamp": "2024-03-07T18:00:00+00:00"
+          },
+          {
+            "txid": "in007",
+            "amount": 1.0,
+            "matched_value": 1.0,
+            "timestamp": "2024-03-08T19:00:00+00:00"
+          },
+          {
+            "txid": "in008",
+            "amount": 0.1,
+            "matched_value": 0.1,
+            "timestamp": "2024-03-09T20:00:00+00:00"
+          },
+          {
+            "txid": "in009",
+            "amount": 0.5,
+            "matched_value": 0.5,
+            "timestamp": "2024-03-10T21:00:00+00:00"
+          }
+        ],
+        "match_count": 15,
+        "match_share": 1.0,
+        "round_values_checked": [
+          0.1,
+          0.25,
+          0.5,
+          1.0,
+          2.0,
+          5.0,
+          10.0
+        ],
+        "tolerance": "\u00b11%"
+      },
+      "source": {
+        "name": "Behavioral heuristic (this tool)",
+        "url": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "id": "obfuscation.self_peel",
+      "category": "obfuscation",
+      "label": "Repeated dominant-output self-change across 5 transactions",
+      "severity": 35,
+      "confidence": "low",
+      "explanation": "5 contiguous spends by this address each split funds into one large self-change output and one small output, with the self-change retaining at least 85% of value. This address-local pattern can resemble incremental fund peeling, but does not establish a multi-address peel chain.",
+      "evidence": {
+        "links": [
+          {
+            "txid": "peel000",
+            "timestamp": "2024-03-01T12:00:00+00:00",
+            "carried_forward": 9.8,
+            "carry_address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+            "peeled_off": 0.2,
+            "carry_ratio": 0.98
+          },
+          {
+            "txid": "peel001",
+            "timestamp": "2024-03-01T15:00:00+00:00",
+            "carried_forward": 9.600000000000001,
+            "carry_address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+            "peeled_off": 0.2,
+            "carry_ratio": 0.9796
+          },
+          {
+            "txid": "peel002",
+            "timestamp": "2024-03-01T18:00:00+00:00",
+            "carried_forward": 9.400000000000002,
+            "carry_address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+            "peeled_off": 0.2,
+            "carry_ratio": 0.9792
+          },
+          {
+            "txid": "peel003",
+            "timestamp": "2024-03-01T21:00:00+00:00",
+            "carried_forward": 9.200000000000003,
+            "carry_address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+            "peeled_off": 0.2,
+            "carry_ratio": 0.9787
+          },
+          {
+            "txid": "peel004",
+            "timestamp": "2024-03-02T00:00:00+00:00",
+            "carried_forward": 9.000000000000004,
+            "carry_address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+            "peeled_off": 0.2,
+            "carry_ratio": 0.9783
+          }
+        ],
+        "link_count": 5,
+        "threshold": "\u22654 contiguous self-change spends with one output holding \u226585% of value"
+      },
+      "source": {
+        "name": "Behavioral heuristic (this tool)",
+        "url": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "id": "obfuscation.rapid_forward",
+      "category": "obfuscation",
+      "label": "100% of received funds forwarded within one hour",
+      "severity": 35,
+      "confidence": "medium",
+      "explanation": "Roughly 7.96 BTC of the 8 BTC this address received was sent onward within an hour of arriving. Pass-through behaviour like this suggests the address is a relay rather than a destination \u2014 typical of automated laundering infrastructure, though also of custodial hot wallets.",
+      "evidence": {
+        "forwarded_value": 7.96,
+        "total_received": 8.0,
+        "forwarded_share": 0.995,
+        "examples": [
+          {
+            "received_tx": "recv000",
+            "forwarded_tx": "fwd000",
+            "amount": 1.99,
+            "delay_minutes": 12.0
+          },
+          {
+            "received_tx": "recv001",
+            "forwarded_tx": "fwd001",
+            "amount": 1.99,
+            "delay_minutes": 12.0
+          },
+          {
+            "received_tx": "recv002",
+            "forwarded_tx": "fwd002",
+            "amount": 1.99,
+            "delay_minutes": 12.0
+          },
+          {
+            "received_tx": "recv003",
+            "forwarded_tx": "fwd003",
+            "amount": 1.99,
+            "delay_minutes": 12.0
+          }
+        ],
+        "threshold": "\u226560% of received value forwarded within 1 hour"
+      },
+      "source": {
+        "name": "Behavioral heuristic (this tool)",
+        "url": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "id": "ransomware.group_context",
+      "category": "ransomware",
+      "label": "Group intelligence available for Conti",
+      "severity": 0,
+      "confidence": "medium",
+      "explanation": "The Conti family has a tracked group profile on ransomware.live, with 812 recorded victims. Conti operated a ransomware-as-a-service model and was among the most prolific extortion operations before its public breakup.",
+      "evidence": {
+        "group": "Conti",
+        "matched_from_family": "Conti",
+        "victim_count": 812,
+        "first_seen": "2020-02-25",
+        "last_seen": "2022-06-22",
+        "profile_url": "https://www.ransomware.live/group/conti"
+      },
+      "source": {
+        "name": "ransomware.live",
+        "url": "https://www.ransomware.live/",
+        "retrieved_at": "2026-07-27T09:00:00+00:00"
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "label": "1A1zP1\u2026ivfNa",
+        "type": "target",
+        "flags": [],
+        "hop": 0
+      },
+      {
+        "id": "1CoUnTerPartyExampleAddress009xQ2",
+        "label": "1CoUnT\u20269xQ2",
+        "type": "counterparty",
+        "flags": [
+          "ofac"
+        ],
+        "hop": 1
+      },
+      {
+        "id": "1SecondFlaggedCounterparty00003Kd",
+        "label": "1Secon\u202603Kd",
+        "type": "counterparty",
+        "flags": [
+          "ransomware:REvil"
+        ],
+        "hop": 1
+      },
+      {
+        "id": "1IntermediaryAddressExample0000Wq",
+        "label": "1Inter\u202600Wq",
+        "type": "counterparty",
+        "flags": [],
+        "hop": 1
+      },
+      {
+        "id": "1TwoHopFlaggedAddressExample00Zz",
+        "label": "1TwoHo\u202600Zz",
+        "type": "counterparty",
+        "flags": [
+          "ransomware:Conti"
+        ],
+        "hop": 2
+      }
+    ],
+    "edges": [
+      {
+        "source": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "target": "1CoUnTerPartyExampleAddress009xQ2",
+        "value": 4.2,
+        "tx_hash": "abc123def4567890abc123def4567890abc123def4567890abc123def4567890",
+        "timestamp": "2021-06-04T02:11:00+00:00"
+      },
+      {
+        "source": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "target": "1SecondFlaggedCounterparty00003Kd",
+        "value": 0.85,
+        "tx_hash": "bbb222def4567890abc123def4567890abc123def4567890abc123def4567890",
+        "timestamp": "2021-06-09T14:52:00+00:00"
+      },
+      {
+        "source": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "target": "1IntermediaryAddressExample0000Wq",
+        "value": 2.1,
+        "tx_hash": "ccc333def4567890abc123def4567890abc123def4567890abc123def4567890",
+        "timestamp": "2021-07-01T08:20:00+00:00"
+      },
+      {
+        "source": "1IntermediaryAddressExample0000Wq",
+        "target": "1TwoHopFlaggedAddressExample00Zz",
+        "value": 2.0,
+        "tx_hash": "ddd444def4567890abc123def4567890abc123def4567890abc123def4567890",
+        "timestamp": "2021-07-01T09:05:00+00:00"
+      }
+    ]
+  },
+  "taint_paths": [
+    {
+      "target_flag": "ofac",
+      "hops": 1,
+      "path": [
+        "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "1CoUnTerPartyExampleAddress009xQ2"
+      ],
+      "bottleneck_value": 4.2,
+      "direction_sequence": [
+        "out"
+      ],
+      "tx_hashes": [
+        "abc123def4567890abc123def4567890abc123def4567890abc123def4567890"
+      ]
+    },
+    {
+      "target_flag": "ransomware:Conti",
+      "hops": 2,
+      "path": [
+        "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "1IntermediaryAddressExample0000Wq",
+        "1TwoHopFlaggedAddressExample00Zz"
+      ],
+      "bottleneck_value": 2.0,
+      "direction_sequence": [
+        "out",
+        "out"
+      ],
+      "tx_hashes": [
+        "ccc333def4567890abc123def4567890abc123def4567890abc123def4567890",
+        "ddd444def4567890abc123def4567890abc123def4567890abc123def4567890"
+      ]
+    }
+  ],
+  "sources_used": [
+    {
+      "name": "OFAC SDN List",
+      "records": 522,
+      "retrieved_at": "2026-07-27T09:00:00+00:00",
+      "stale": false
+    },
+    {
+      "name": "Ransomwhere",
+      "records": 26000,
+      "retrieved_at": "2026-07-27T09:00:00+00:00",
+      "stale": false
+    },
+    {
+      "name": "ransomware.live",
+      "records": 312,
+      "retrieved_at": "2026-07-27T09:00:00+00:00",
+      "stale": false
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,128 @@
+{
+  "stats": {
+    "chain_stats": {
+      "funded_txo_sum": 1000000000,
+      "spent_txo_sum": 99999999,
+      "tx_count": 5,
+      "funded_txo_count": 5,
+      "spent_txo_count": 5
+    },
+    "mempool_stats": {
+      "funded_txo_sum": 0,
+      "spent_txo_sum": 0,
+      "tx_count": 0
+    }
+  },
+  "txs": [
+    {
+      "txid": "peel000",
+      "timestamp": "2024-03-01T12:00:00+00:00",
+      "block_time": 1709294400,
+      "inputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.8
+        },
+        {
+          "address": "1HR9DBQcZytmSh9wpNNvoBwaHqjYFFZPiH",
+          "value": 0.2
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "peel001",
+      "timestamp": "2024-03-01T15:00:00+00:00",
+      "block_time": 1709305200,
+      "inputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.8
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.600000000000001
+        },
+        {
+          "address": "1xFq2oPBE4uZQbcfMaAPyiKRyZy6CBkRWx",
+          "value": 0.2
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "peel002",
+      "timestamp": "2024-03-01T18:00:00+00:00",
+      "block_time": 1709316000,
+      "inputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.600000000000001
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.400000000000002
+        },
+        {
+          "address": "1HEACsyWtEkmDDZd3SaJmYRvnfY4Kr42zH",
+          "value": 0.2
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "peel003",
+      "timestamp": "2024-03-01T21:00:00+00:00",
+      "block_time": 1709326800,
+      "inputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.400000000000002
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.200000000000003
+        },
+        {
+          "address": "1HzN9bSDvzzicrydKkLCQyWSDvKn7k3oAH",
+          "value": 0.2
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "peel004",
+      "timestamp": "2024-03-02T00:00:00+00:00",
+      "block_time": 1709337600,
+      "inputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.200000000000003
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1H58yfjY9skCz2qYT3NaANvYk5A2x2mn4H",
+          "value": 9.000000000000004
+        },
+        {
+          "address": "1nvLocFq9Gxf5DL3jXpw4fpvjbC6SH3G8n",
+          "value": 0.2
+        }
+      ],
+      "fee": 0.0001
+    }
+  ]
+}

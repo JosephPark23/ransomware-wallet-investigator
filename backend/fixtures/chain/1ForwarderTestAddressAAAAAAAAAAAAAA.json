@@ -1,0 +1,162 @@
+{
+  "stats": {
+    "chain_stats": {
+      "funded_txo_sum": 800000000,
+      "spent_txo_sum": 800000000,
+      "tx_count": 8,
+      "funded_txo_count": 8,
+      "spent_txo_count": 8
+    },
+    "mempool_stats": {
+      "funded_txo_sum": 0,
+      "spent_txo_sum": 0,
+      "tx_count": 0
+    }
+  },
+  "txs": [
+    {
+      "txid": "recv000",
+      "timestamp": "2024-03-01T12:00:00+00:00",
+      "block_time": 1709294400,
+      "inputs": [
+        {
+          "address": "1zG91z5ZxWVF3BM9HCWmMafhjj4DFbMQjz",
+          "value": 2.01
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "fwd000",
+      "timestamp": "2024-03-01T12:12:00+00:00",
+      "block_time": 1709295120,
+      "inputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1WKQYNZagkMut9hWpCYuo11rHHmznkv8XW",
+          "value": 1.99
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "recv001",
+      "timestamp": "2024-03-02T12:00:00+00:00",
+      "block_time": 1709380800,
+      "inputs": [
+        {
+          "address": "1ckGFjyeKTdtJ7SD7MXu5BQRB7j9LR7NAc",
+          "value": 2.01
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "fwd001",
+      "timestamp": "2024-03-02T12:12:00+00:00",
+      "block_time": 1709381520,
+      "inputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1TUFMb99Z2K8GGuBC4FLeuPZzAKsBVpQvT",
+          "value": 1.99
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "recv002",
+      "timestamp": "2024-03-03T12:00:00+00:00",
+      "block_time": 1709467200,
+      "inputs": [
+        {
+          "address": "1AV2drvTy1RT1L1WkjCUTxLD3ym33XRoWA",
+          "value": 2.01
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "fwd002",
+      "timestamp": "2024-03-03T12:12:00+00:00",
+      "block_time": 1709467920,
+      "inputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1MduSezbhwdS486UHVqB9udzoXeMnsLsAM",
+          "value": 1.99
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "recv003",
+      "timestamp": "2024-03-04T12:00:00+00:00",
+      "block_time": 1709553600,
+      "inputs": [
+        {
+          "address": "1YUzVodbHrzUA7Bp663PAC6rYpRztLKhkY",
+          "value": 2.01
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "fee": 0.0001
+    },
+    {
+      "txid": "fwd003",
+      "timestamp": "2024-03-04T12:12:00+00:00",
+      "block_time": 1709554320,
+      "inputs": [
+        {
+          "address": "1ForwarderTestAddressAAAAAAAAAAAAAA",
+          "value": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "address": "1QpbyyNMdqNzgG2qPP8pNHZFtLWjxbE1wQ",
+          "value": 1.99
+        }
+      ],
+      "fee": 0.0001
+    }
+  ]
+}
